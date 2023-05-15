@@ -28,11 +28,7 @@ impl Controller {
         let dt = input.time - self.time;
         let error = input.setpoint - input.measured;
         let integral = self.integral + error * dt;
-        let derivative = if self.generation == 0 {
-            0.0
-        } else {
-            (error - self.error) / dt
-        };
+        let derivative = (error - self.error) / dt;
 
         Self {
             generation: self.generation + 1,
@@ -65,7 +61,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             p: 0.3,
-            i: 0.0,
+            i: 0.000003,
             d: 150.0,
         }
     }
