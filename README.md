@@ -1,13 +1,14 @@
-# AF Interview
+# Interview Option 1
 
-Welcome! If you are reading this, either you've stumbled across this repo, or you are an interview candidate at AstroForge. We do our coding challenge a little differently than some of you are used to. This is a take-home test, and so feel free to take as long as you want. The core of the test is not just the code you write, but your ability to explain what you wrote and why. You have as long as you want to finish the test, but we have designed these challenges to not be too time-consuming.
+This is the first option for the AF interview challenge. You are asked to develop a program that controls a simple simulation. The goal is to get the included vehicle to hover. The simulation uses very simple 1D kinematics. Your vehicle has a maximum thrust of 20N, and your craft weighs 1KG. You may not change `sim/src/lib.rs`. Ideally, you will write a simple [control loop](https://en.wikipedia.org/wiki/Control_loop). Control loops generally take information about the current state of a system, they calculate a desired change to the system and then command actuators (thrusters, motors, etc) to change the system. The classic example of a control loop is a [PID loop](https://en.wikipedia.org/wiki/PID_controller). If you aren't comfortable writing a control loop, try out the second option instead.
 
-There are two paths you can choose for this challenge: 
-1. You can write a control loop to control a simple vehicle simulation
-2. You can write a protocol for a simple sensor.
+Ask any questions you want, but only some will be answered. 
 
-You can find each of these challenges in the [`sim`](./sim) and [`protocol`](./protocol) directories. Choose whichever you feel best fits your skills. No extra points are rewarded for doing both, and we will only review one.
+### Requirments
+- The craft must be able to hover within a reasonable error, you can decide what that means.
+- You must document what you are doing in the source code with comments, and be prepared to explain your design, tradeoffs, and whatnot.
+- You must include a way of visualizing the vehicle, this could be a graph, an animation, or anything you can think of.
+- Ensure you use Git as you would in a real project. Commit often, we are here to see your process.
+- Please outline how you tested your code. This could be manual testing, automatic testing, or something in-between.
 
-To get started simply fork this repo. Make sure to keep your fork private, and when you are ready add `@sphw` as a collaborator.
-
-If you have any questions, feel free to reach out to your contact and ask.
+When you are finished push your changes, add `@sphw` as a collaborator, and send an email to your contact at AstroForge.
