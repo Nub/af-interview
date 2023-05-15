@@ -9,7 +9,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             time_step: 0.01,
-            duration: 10.0,
+            duration: 20.0,
         }
     }
 }
@@ -19,9 +19,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let iterations = (cfg.duration / cfg.time_step) as usize;
     let states: Vec<Sim> = (0..iterations)
         .scan(Sim::default(), |state, i| {
+            let time = i as f64 * cfg.time_step;
             let input = Input {
-                time: i as f64 * cfg.time_step,
-                setpoint: 50.0,
+                time,
+                setpoint: if time < cfg.duration / 2.0 { 50.0 } else { 100.0 },
             };
             *state = state.step(&input);
             Some(*state)
@@ -35,7 +36,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 &states,
                 &[
                     ("Position", |x| x.input.time, |x| x.pos()),
-                    // ("Velocity", |x| x.input.time, |x| x.vel()),
+                    ("Velocity", |x| x.input.time, |x| x.vel()),
                     // ("Acceleration", |x| x.input.time, |x| x.accl()),
                     ("Setpoint", |x| x.input.time, |x| x.input.setpoint),
                 ],
@@ -49,7 +50,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             vec![plot::lines(
                 &states,
                 &[
-                    ("Error", |x| x.input.time, |x| x.controller.error),
+                    // ("Error", |x| x.input.time, |x| x.controller.error),
                     // ("Integral", |x| x.input.time, |x| x.controller.integral),
                     ("Derivative", |x| x.input.time, |x| x.controller.derivative),
                     ("Output", |x| x.input.time, |x| x.controller.output()),

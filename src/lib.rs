@@ -101,14 +101,16 @@ impl Sim {
 
     /// Attempt to linearize PID -> thrust
     fn controller_to_thrust(&self) -> f64 {
-        let hover = self.config.hover_thrust_percent;
-        let output = self.controller.output().clamp(-1.0, 1.0);
+        // let hover = self.config.hover_thrust_percent;
+        // let output = 
+        self.controller.output().clamp(-1.0, 1.0)
 
-        if output < 0.0 {
-            hover * -output
-        } else {
-            (1.0 - hover) * output
-        }
+        // if output < 0.0 {
+        //     hover * -output
+        // } else {
+        //     (1.0 - hover) * output
+        // }
+        // .clamp(0.0, 1.0)
     }
 
     pub fn pos(&self) -> f64 {

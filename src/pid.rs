@@ -64,9 +64,9 @@ impl Default for Controller {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            p: 0.019,
+            p: 0.3,
             i: 0.0,
-            d: 0.1,
+            d: 150.0,
         }
     }
 }
