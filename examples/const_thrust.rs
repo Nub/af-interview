@@ -50,9 +50,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             vec![plot::lines(
                 &states,
                 &[
-                    // ("Error", |x| x.input.time, |x| x.controller.error),
+                    ("Error", |x| x.input.time, |x| x.controller.error),
                     // ("Integral", |x| x.input.time, |x| x.controller.integral),
-                    ("Derivative", |x| x.input.time, |x| x.controller.derivative),
+                    // ("Derivative", |x| x.input.time, |x| x.controller.derivative),
                     ("Output", |x| x.input.time, |x| x.controller.output()),
                 ],
             )]
