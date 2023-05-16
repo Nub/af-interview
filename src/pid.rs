@@ -75,7 +75,7 @@ impl Default for Controller {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            p: 0.1,
+            p: 0.075,
             i: 0.0015,
             d: 0.1,
         }

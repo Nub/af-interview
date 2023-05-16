@@ -91,7 +91,7 @@ impl Sim {
         let dt = time - self.input.time;
         let thrust_err = self.config.thrust_err.sample(&mut rand::thread_rng());
         let rand_force = self.config.rand_force.sample(&mut rand::thread_rng());
-        let thrust_percent = self.controller_to_thrust();
+        let thrust_percent = self.controller_to_thrust().clamp(0.0,1.0);
 
         *self.state.index_mut((2, 0)) =
             self.config.thrust * thrust_percent + rand_force + thrust_err - 9.81;
