@@ -4,13 +4,13 @@ use rand_distr::{Distribution, Normal};
 pub mod pid;
 pub mod plot;
 
+/// The physics simulation configuration
 #[derive(Copy, Clone, Debug)]
 pub struct Config {
     thrust_err: Normal<f64>,
     sensor_err: Normal<f64>,
     rand_force: Normal<f64>,
     thrust: f64,
-    hover_thrust_percent: f64,
 }
 
 impl Default for Config {
@@ -20,11 +20,11 @@ impl Default for Config {
             sensor_err: Normal::new(0.1, 0.5).unwrap(),
             rand_force: Normal::new(0.0, 5.75).unwrap(),
             thrust: 40.0,
-            hover_thrust_percent: 0.24,
         }
     }
 }
 
+/// The physics/controller simulation state for a single iteration
 #[derive(Copy, Clone, Debug)]
 pub struct Sim {
     pub config: Config,
@@ -34,10 +34,16 @@ pub struct Sim {
     pub controller: pid::Controller,
 }
 
+/// The variable input (impurities) into the simulation
+/// Note: this does not capture the thread local random variable generation
+///     this will need to be refactored
 #[derive(Copy, Clone, Debug)]
 pub struct Input {
-    //TODO: Move to utilizing types for time; expedite by assuming seconds
+    /// Assumed seconds
+    // TODO: use typed time
     pub time: f64,
+    /// Position the controller will drive to
+    // TODO: use typed position
     pub setpoint: f64,
 }
 
@@ -57,6 +63,8 @@ impl Default for Sim {
 }
 
 impl Sim {
+    /// Run the physics simulation and controller
+    /// Wrapped into a pure function
     pub fn step(&self, input: &Input) -> Self {
         let mut prev = *self;
 
@@ -76,6 +84,8 @@ impl Sim {
         }
     }
 
+    /// The physics simulation altered to accept a shared input structure.
+    // TODO: make this a stateless pure function
     pub fn tick(&mut self, input: &Input) {
         let time = input.time;
         let dt = time - self.input.time;
@@ -99,19 +109,25 @@ impl Sim {
         }
     }
 
+    /// This is meant to capture additional vehicle dynamics yet to be modeled
+    /// Such as thrust linearization, for now we just clamp the controller outputs to some sane
+    /// range
     pub fn controller_to_thrust(&self) -> f64 {
         self.controller.output().clamp(-1.0, 1.0)
     }
 
+    /// Getter for position
     pub fn pos(&self) -> f64 {
         self.state[0]
     }
 
+    /// Getter for velocity
     pub fn vel(&self) -> f64 {
         let err = self.config.sensor_err.sample(&mut rand::thread_rng());
         self.state[1] + err
     }
 
+    /// Getter for acceleration
     pub fn accl(&self) -> f64 {
         let err = self.config.sensor_err.sample(&mut rand::thread_rng());
         self.state[2] + err

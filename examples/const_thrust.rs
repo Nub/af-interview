@@ -1,5 +1,6 @@
 use sim::{plot, Input, Sim};
 
+/// Simulation runner config
 struct Config {
     time_step: f64,
     duration: f64,
@@ -17,7 +18,11 @@ impl Default for Config {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cfg = Config::default();
     let iterations = (cfg.duration / cfg.time_step) as usize;
+
+    // Run the simulation and collect the states for plotting
+    // Halfway through the simulation change the setpoint for a second step impulse
     let states: Vec<Sim> = (0..iterations)
+        // .take(2)
         .scan(Sim::default(), |state, i| {
             let time = i as f64 * cfg.time_step;
             let input = Input {
@@ -29,6 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         })
         .collect();
 
+    // Plot the things we wish to see
     let plots = vec![
         plot::plot(
             "Sim State",
@@ -63,6 +69,5 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     ];
 
     plot::show(&plots);
-
     Ok(())
 }

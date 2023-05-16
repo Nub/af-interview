@@ -4,6 +4,7 @@ use serde::Serialize;
 use std::io::Write;
 use uuid::Uuid;
 
+/// Generic plotter that contructs multiple traces into a single plot
 pub fn plot<X, Y>(title: &str, lines: Vec<Box<Scatter<X, Y>>>) -> Plot
 where
     X: Serialize + Clone + 'static,
@@ -21,6 +22,13 @@ where
     plot
 }
 
+/// Generic trace generator give a data set and a list of tuples that provide a trace name and map
+/// the x and y values for a plot
+///
+/// # Args
+/// * data: Some array of data
+/// * lines: A slice of tuples that can map a data item to a x,y value (trace_name, fn_map_x_axis, fn_map_y_axis)
+///
 pub fn lines<'a, T, X, Y>(
     data: &'a Vec<T>,
     lines: &[(&'a str, fn(&'a T) -> X, fn(&'a T) -> Y)],
@@ -39,6 +47,8 @@ where
         .collect()
 }
 
+/// Render the plots out to HTML and bundle them with a handy script to synchronize X axis zoom
+/// levels, along with opening it in your default web browswer for fast viewing
 pub fn show(plots: &Vec<Plot>) {
     use std::env;
 
