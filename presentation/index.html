@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<body>
+<html>
+  <head>
+    <style>
+* {
+  font-size: 18pt;
+  font-family: Arial;
+  padding: 10px;
+  margin: 10px;
+  background-color: #e8f0f5; 
+  color: #000000;
+}
+.section {
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 3px;
+  border-image: linear-gradient(to bottom, #b393d3, #e8f0f5) 1;
+  background-clip: padding-box;
+}
+
+iframe {
+  border: 0;
+}
+header h1 {
+  font-size: 70px;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  background-image: linear-gradient(to left, #553c9a, #b393d3);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+    </style>
+    <title>Control 1D kinematics</title>
+  </head>
+
+  <article>
+    <header>
+      <h1>Control of 1D kinematics sim</h1>
+      <p>A classic PID controller was chosen to control the provided 1D kinematics simulation; The following is the small journey that was used to manually tune the controller</p>
+    </header>
+
+    <h2>Tuning the classic PID</h2>
+    <p> A simple process was followed to tune the controller. The general process is known as bracketing or rule of halfs. I start by isolating P, the PD, the PID terms. The first goal is to identify the domain in which P and D are reasonable, I start with a random value and march by 1e1 or 1e-1 steps until behavior appears to be reasonable.</p>
+
+    <div class="section">
+      <h3>Zero gains</h3>
+      <p>What does our system look like with no control?</p>
+      <iframe width="95%" height="1000px" src="plots/zero_gains.html"></iframe>
+    </div>
+
+    <div class="section">
+      <h3>Random initial guess at P (kP = 0.1)</h3>
+      <p><b>Observation:</b> Afer making a random guess we can see that we are completely saturating our ouput signal, time to march down the P gains values by 1e-1 until we find something less insane</p>
+      <iframe width="95%" height="1000px" src="plots/p_0.1.html"></iframe>
+    </div>
+
+    <div class="section">
+      <h3>Begin hunting for P (kP = 0.01)</h3>
+      <p><b>Observation:</b> Looks like this gets us close! No actuator saturation, and we reach our setpoint with no major oscillations! Time to begin bringing in the other terms.</p>
+      <iframe width="95%" height="1000px" src="plots/p_0.01.html"></iframe>
+    </div>
+
+    <div class="section">
+      <h3>Time to bring in the D term (kP = 0.01, kD = 0.1)</h3>
+      <p><b>Observation:</b> Uh oh, maybe a bit too aggressive on the D term. We brought in quit a bit more noise to out output signal and seem to be totally dampening out the P term.</p>
+      <iframe width="95%" height="1000px" src="plots/d_0.1.html"></iframe>
+    </div>
+
+    <div class="section">
+      <h3>Begin hunting for D (kp = 0.01; kD = 0.01)</h3>
+      <p><b>Observation:</b> Ahh here we go! Now we are providing some shaping control to the P term, but we are definitely critically underperforming with the P term, let's bring that up.</p>
+      <iframe width="95%" height="1000px" src="plots/p_0.01-d_0.01.html"></iframe>
+    </div>
+
+    <div class="section">
+      <h3>Time to scale P back up (kp = 0.05; kD = 0.01)</h3>
+      <p><b>Observation:</b> Back to a similar position before the D term was introduced, looks like we will need to raise these in tandom to get the response we are after!</p>
+      <iframe width="95%" height="1000px" src="plots/p_0.05-d_0.01.html"></iframe>
+    </div>
+
+    <div class="section">
+      <h3>Looks like the D term can follow (kp = 0.075; kD = 0.1)</h3>
+      <p><b>Observation:</b> Yes! this is the balance we are looking for, no over shoot and enters into a nice steady state. The D term noise seems under control too! Now we just need to tackle that steady state offset!</p>
+      <iframe width="95%" height="1000px" src="plots/p_0.075-d_0.1.html"></iframe>
+    </div>
+
+    <div class="section">
+      <h3>Begin hunting for I (kp = 0.075; kD = 0.1; kI = 0.01)</h3>
+      <p><b>Observation:</b> Close! We are probably a bit too strong on the I term looks like we have some wind-up which drives us past the setpoint, and fights us from getting back.</p>
+      <iframe width="95%" height="1000px" src="plots/i_0.01.html"></iframe>
+    </div>
+
+    <div class="section">
+      <h3>Finalize the gains (kp = 0.075; kD = 0.1; kI = 0.0015)</h3>
+      <p><b>Observation:</b> There we go! Now we are tracking our setpoint quite well! Only thing left to do would be to really understand our model better to see if we missed out!</p>
+      <iframe width="95%" height="1000px" src="plots/final.html"></iframe>
+    </div>
+
+  </article>
+</body>
+</html>

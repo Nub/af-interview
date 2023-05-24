@@ -63,7 +63,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     ("Error", |x| x.input.time, |x| x.controller.error),
                     // ("Integral", |x| x.input.time, |x| x.controller.integral),
                     // ("Derivative", |x| x.input.time, |x| x.controller.derivative),
-                    ("Output", |x| x.input.time, |x| x.controller.output() * 100.0),
+                    ("Output", |x| x.input.time, |x| x.controller.output().clamp(0.0, 1.0) * 100.0),
                 ],
             )]
             .into_iter()

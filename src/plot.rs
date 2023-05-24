@@ -125,6 +125,7 @@ pub fn show(plots: &Vec<Plot>) {
 
     // Save the rendered plot to the temp file.
     let temp_path = temp.to_str().unwrap();
+    println!("Rendering plot to: {}", temp_path);
     let mut file = std::fs::File::create(temp_path).unwrap();
     file.write_all(html.as_bytes())
         .expect("failed to write html output");
